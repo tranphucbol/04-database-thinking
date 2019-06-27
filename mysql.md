@@ -63,6 +63,15 @@
 - Không hoạt động với query cache
 - Việc join có thể rất phức tạp
 
+### Network Database (NDB)
+
+*Ưu điểm:*
+
+- Có thể xử lý các lỗi của các node dữ liệu đơn lẻ mà không có tác động nào khác ngoài một số lượng nhỏ các giao dịch bị hủy bỏ do mất trạng thái giao dịch
+- Các node đơn lẻ có thể  dừng hoặc khởi dộng lại.
+
+*Nhược điểm:*
+
 ## Data Types
 
 ### Numeric Types
@@ -86,3 +95,17 @@
   - **SERIAL** là thay thế cho **BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE**
 - **DECIMAL[(M[,D])] [UNSIGNED] [ZEROFILL]**
   - **M** là tổng chữ số (độ chính xác) và D là số chữ đố sau dấu thập phân. Dấu thập phân và dấu âm (-) không được tính bằng **M**. Nếu **D** bằng 0, các giá trị không có dấu phận phân hoặc phần thập phân. Số chữ số tối đa **M** cho **DECIMAL** là 65. Số thập phân **D** được hỗ trợ tối đa là 30. Nếu **D** bị bỏ qua, mặc định là 0. Nếu **M** bị bỏ qua, mặc đinh là 10.
+- **FLOAT(p) [UNSIGNED] [ZEROFILL]**
+  - p là độ chính xác trong bits. Nhưng trong MySQL dùng giá trị này chỉ để xác định là dùng **FLOAT** hay **DOUBLE**. Nếu p là 0 -> 24, kiểu dữ liệu là **FLOAT** với không có **M** hoặc **D**. Nếu p là 25 -> 53, kiểu dữ liệu là **DOUBLE**.
+- **DOUBLE[(M, D)] [UNSIGNED] [ZEROFILL]**
+  - **M** là tổng số chữ số, **D** là số chữ số thập phân.
+
+### Date và Time
+
+- **DATE**
+  - Khoảng từ `'1000-01-01` đến `'9999-12-31'`. MySQL hiển thị **DATE** theo định dạng `'YYYY-MM-DD'`, nhưng cho phép gán giá trị dùng `string` hoặc `number`
+- **DATETIME[(fsp)]**
+  - Là kết hợp của date và time. Khoảng từ `'1000-01-01 00:00:00.000000'` đến `'9999-12-31 23:59:59.999999'`. MySQL hiển thị **DATETIME** theo định dạng `'YYYY-MM-DD hh:mm:ss[.fraction]'` và cũng cho phép gán giá trị bằng `string` hoặc `number`
+  - **fsp** khoảng từ 0 -> 6, biểu thị sự chính xác của giây. Nếu bỏ qua, giá trị mặc định là 0.
+- **TIMESTAMP[(fsp)]**
+  - Khoảng từ `'1970-01-01 00:00:01.000000' UTC` đến `'2038-01-19 03:14:07.999999' UTC`, tương tự như DATETIME, chỉ khác khoảng.
