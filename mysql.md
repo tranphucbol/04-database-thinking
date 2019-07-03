@@ -225,3 +225,28 @@ Phantom read xảy ra trong quá trình của một transaction, một dòng m�
 #### Read Uncommitted
 
 Đây là isolation level thấp nhất. Trong level này, `dirty read` được cho phép, vì vậy một transaction có thê thấy được những thay đổi chưa dược commit thực hiện bởi các transaction khác. Ưu điểm ở đây là các transaction sẽ chạy liên tục và transaction sau khi đề lên transaction trước.
+
+## Connector
+
+### JDBC Driver
+
+Các thành phần của JDBC Api về cơ bản bao gồm:
+
+- **DriverManager:** là một clas, nó dùng để quản lý danh sách các Driver (database drivers).
+- **Driver:** là một interface, nó dufgn để liên kết các liên lạc với cơ sở sở dữ liệu, điều khiển các liên lạc với database, Một khi Driver được tải lên, developer không cần phải gọi nó một cách cụ thể.
+- **Connection:** là một interface với tất cả các method cho việc liên lạc với database. Nó mô tả nội dung liên lạc, tát cả các thông tin liên lạc với cơ sở dữ liệu là thông qua chỉ có đói tượng **Connection**
+- **Statement:** là một interface, gói gọn một câu lệnh SQL gửi tới cơ sở dữ liệu được phân tích, tổng hợp, lập kế hoạch và thực hiện.
+- **ResultSet:** đại diện cho tập hợp các bản ghi lấy do thực hiện truy vấn.
+
+<div align="center">
+    <img src="images/jdbc.png" alt="..."/>
+</div>
+
+### Python Driver
+
+Dùng lệnh pip để cài đặt connector cho máy
+
+```sh
+pip install mysql-connector-python
+```
+Cách kết nối: [python-mysql](python-mysql)
