@@ -210,6 +210,18 @@ Phantom read xảy ra trong quá trình của một transaction, một dòng m�
 
 ### Isolation xử lý đồng thời (concurrency)
 
+#### Serializable
+
+Đây là isolation level cao nhất. Với việc triển khai lock-based concurrency control DBMS, serializability yêu cầu read và write locks và sẽ được release vào cuối transaction. Range-locks phải được lấy khi truy vấn SELECT sử dụng mệnh đề WHERE có phạm vi, tránh dược phantom read
+
 #### Read Committed
 
-Đây là level default của một transaction nếu như không config nào thêm. Tạo level này thì transaction sẽ không thể đọc dữ liệu từ một transaction đang trong quá trình cập nhật hay sửa đổi mà phỉa đợi transaction đó hoàn tất. Như vậy sẽ có thể tránh được Dirty Read và Dirty Write nhưng các transaction sẽ phải chờ nhau, dẫn đến Perfomance hệ thống thấp.
+Đây là level default của một transaction nếu như không config nào thêm. Tạo level này thì transaction sẽ không thể đọc dữ liệu từ một transaction đang trong quá trình cập nhật hay sửa đổi mà phỉa đợi transaction đó hoàn tất. Như vậy sẽ có thể tránh được `dirty read` và `dirty write` nhưng các transaction sẽ phải chờ nhau, dẫn đến Perfomance hệ thống thấp.
+
+#### Repeatable read
+
+Ở isolation level này, việc triển khai lock-based concurrency control DBMS sẽ giữ read và write cho đến khi kết thúc dữ liệu. Tuy nhiên, range-locks không được quản lý, nên `phantom read` có thể xảy ra. Viết chồng chéo là được phép tại level này.
+
+#### Read Uncommitted
+
+Đây là isolation level thấp nhất. Trong level này, `dirty read` được cho phép, vì vậy một transaction có thê thấy được những thay đổi chưa dược commit thực hiện bởi các transaction khác. Ưu điểm ở đây là các transaction sẽ chạy liên tục và transaction sau khi đề lên transaction trước.
