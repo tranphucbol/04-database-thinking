@@ -249,4 +249,5 @@ Dùng lệnh pip để cài đặt connector cho máy
 ```sh
 pip install mysql-connector-python
 ```
+
 Cách kết nối: [python-mysql](python-mysql)
