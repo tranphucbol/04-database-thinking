@@ -139,7 +139,7 @@ utf8mb4 khác với `utf8mb3` charactrer set, chỉ hỗ trợ các kí tự BMP
 
 ### Tại sao sử dụng transaction
 
-`Transaction` được dùng để đảm bảo tính toàn vẹn dữ liệu khi xảy ra chỉnh sửa dữ liệu (INSERT, UPDATE, DELETE, ...). Khi một transaction bao gồm nhiều lệnh cập nhật, nó đảm bảo tất cả các cập nhật đều được thực hiện thành công, hoặc là tất cả đều thất bại. Khi đó, dữ liệu được trả về trước khi xảy ra `transaction`. 
+`Transaction` được dùng để đảm bảo tính toàn vẹn dữ liệu khi xảy ra chỉnh sửa dữ liệu (INSERT, UPDATE, DELETE, ...). Khi một transaction bao gồm nhiều lệnh cập nhật, nó đảm bảo tất cả các cập nhật đều được thực hiện thành công, hoặc là tất cả đều thất bại. Khi đó, dữ liệu được trả về trước khi xảy ra `transaction`.
 
 ### Cách sử dụng transaction
 
@@ -167,6 +167,49 @@ Transaction sẽ tự động `ROLLBACK` khi gặp bất cứ lỗi nào xảy r
 
 Distributed Database được xem là database transaction phải được đồng bộ hóa (hoặc cung cấp ACID) giữa nhiều database tham gia được phân phối giữa các địa điểm vật lý khác nhau. Thuộc tính isolation đạt ra một thách thức cho transaction đa database, vì thược tính tuần tự hóa có thể bị vi phạm, ngay cả khi mỗi database cung cấp nó.
 
+#### ACID
+
+- Tính nguyên tố (**Atomicity**). Một transaction bao gồm các hoạt động khác nhau phải thỏa mãn điều kiện hoặc là tất cả thành công hoặc là không hành động nào thành công
+- Tính nhất quán (**Consistency**). Một transaction sẽ có trjang thái bất biến về dữ liệu có nghĩa là dữ liệu luôn được bảo toàn. Nếu có lỗi quay về trạng thái trước đó.
+- Tính độc lập (**Isolation**). Một transaction đang thực thi và chưa được xác nhận phải bảo đảm tính độc lập với các transaction khác.
+- Tính bền vững (**Durability**). Khi một transaction được commit thành công dữ liệu sẽ được lưu lại một cách chuẩn xác.
+
 ## Isolation
 
-Trong database system, `isolation` xác định mức độ toàn vẹn của transaction được hiển thị cho người dùng và hệ thống khác. Ví dụ, khi người dùng tạo một `Đơn đặt hàng` , nhưng không có `Dòng hóa đơn`.
+### Isolation level cơ bản
+
+Mức Isolation tháp hơn làm tăng khả năng nhiều nguời dùng truy cập cùng một dữ liệu cùng một lúc, nhưng làm tăng số lượng hiệu ứng đồng thời (như dirty read hoặc cập nhật bị mất) người dùng có thể gặp phải. Ngược lại, Isolation cao hơn sẽ giảm các loại hiệu ứng đồng thời mà nguwoif dùng có thể gặp, nhưng đòi hởi nhiều tài nguyên hệ thống hơn và tăng khả năng một transaction sẽ chặn một transaction khác.
+
+### Read Phenomena
+
+#### Dirty reads
+
+Dirty read xảy ra khi một transaction cho phép đọc dữ liệu từ một dòng được thay đổi bởi một transaction khác đang được chạy và chưa commit.
+
+<div align="center">
+    <img src="images/dirty-read.png" alt="...">
+</div>
+
+#### Non-repeatable reads
+
+Non-repeatable read xảy ra trong suốt quá trình của một transaction, một dòng truy xuất dữ liệu 2 lần và giá trị trong dòng khác nhau giữa các lần đọc.
+
+<div align="center">
+    <img src="images/non-repeatable-read.png" alt="...">
+</div>
+
+Trong ví dụ trên, transaction 2 commit thành công, tức là những thay dổi của nó đối với dòng có id 1 sẽ được hiển thị. Tuy nhiên, transaction 1 đã được thấy một giá trị khác của age trong dòng đó. Tại isolation level SERIALIZABLE và REPETABLE READ, DBMS phải trả về giá trị của cho lần SELECT thứ 2. Tại isolation level READ COMMITTED và READ UNCOMMITED, DBMS có thể trả về giá trị update, điều này là non-repeatable read.
+
+#### Phantom reads
+
+Phantom read xảy ra trong quá trình của một transaction, một dòng mới được thêm và xóa bởi một transaction khác vào các record đang được đọc.
+
+<div align="center">
+    <img src="images/phantom-read.png" alt="...">
+</div>
+
+### Isolation xử lý đồng thời (concurrency)
+
+#### Read Committed
+
+Đây là level default của một transaction nếu như không config nào thêm. Tạo level này thì transaction sẽ không thể đọc dữ liệu từ một transaction đang trong quá trình cập nhật hay sửa đổi mà phỉa đợi transaction đó hoàn tất. Như vậy sẽ có thể tránh được Dirty Read và Dirty Write nhưng các transaction sẽ phải chờ nhau, dẫn đến Perfomance hệ thống thấp.
