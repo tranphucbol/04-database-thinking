@@ -257,3 +257,78 @@ In ra với số `score`
 4) "Alan Kay"
 5) "Anita Borg"
 ```
+
+## Pub/Sub
+
+<div align="center">
+    <img src="images/pub-sub.png" alt="...">
+</div>
+
+Cơ chế hoạt động giống như, khi `subcribe` một channel trên youtube. Khi một producer đăng tải một video lên youtube. Thì tất cả client `subcribe` channel đó, sẽ nhận được thông báo là video đăng được đăng lên.
+
+Subscribe một hoặc nhiều kênh:
+
+```bash
+SUBSCRIBE first second
+*3
+$9
+subscribe
+$5
+first
+:1
+*3
+$9
+subscribe
+$6
+second
+:2
+```
+
+Khi từ một client khác, `PUSHLISH` đến channels `second`
+
+```bash
+> PUBLISH second Hello
+```
+
+Ở client đầu tiên sẽ nhận được tin nhắn:
+
+```bash
+*3
+$7
+message
+$6
+second
+$5
+Hello
+```
+
+Client có thể unsubscribe bằng lệnh `UNSUBCRIBE`
+
+```bash
+UNSUBSCRIBE
+*3
+$11
+unsubscribe
+$6
+second
+:1
+*3
+$11
+unsubscribe
+$5
+first
+:0
+```
+
+Pattern-matching subscriptions
+
+```bash
+PSUBSCRIBE news.*
+PUNSUBSCRIBE news.*
+```
+
+## Lock
+
+### Cơ bản về Lock
+
+Trong computer science, `lock` hoặc `mutex` là một cơ chế đồng bộ để thực thi các giới hạn truy cập vào một tài nguyên trong một môi trường có thread thực thi. Một `lock` được thiết kế để thực thi một mutual exclusion concurrency control.
