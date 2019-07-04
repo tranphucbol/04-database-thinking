@@ -257,4 +257,3 @@ In ra với số `score`
 4) "Alan Kay"
 5) "Anita Borg"
 ```
-
