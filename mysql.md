@@ -1,5 +1,44 @@
 # MySQL
 
+- [MySQL](#MySQL)
+  - [Installation](#Installation)
+  - [Storage Engine](#Storage-Engine)
+    - [InnoDB](#InnoDB)
+    - [MyISAM](#MyISAM)
+    - [Memory](#Memory)
+    - [CSV](#CSV)
+    - [Federated](#Federated)
+    - [Network Database (NDB)](#Network-Database-NDB)
+  - [Data Types](#Data-Types)
+    - [Numeric Types](#Numeric-Types)
+    - [Date và Time Type](#Date-v%C3%A0-Time-Type)
+    - [String Type](#String-Type)
+    - [utf8mb4](#utf8mb4)
+  - [Transaction](#Transaction)
+    - [Tại sao sử dụng transaction](#T%E1%BA%A1i-sao-s%E1%BB%AD-d%E1%BB%A5ng-transaction)
+    - [Cách sử dụng transaction](#C%C3%A1ch-s%E1%BB%AD-d%E1%BB%A5ng-transaction)
+    - [Xử lý khi gặp lỗi trong transaction](#X%E1%BB%AD-l%C3%BD-khi-g%E1%BA%B7p-l%E1%BB%97i-trong-transaction)
+    - [Distributed Database](#Distributed-Database)
+      - [ACID](#ACID)
+  - [Isolation](#Isolation)
+    - [Isolation level cơ bản](#Isolation-level-c%C6%A1-b%E1%BA%A3n)
+    - [Read Phenomena](#Read-Phenomena)
+      - [Dirty reads](#Dirty-reads)
+      - [Non-repeatable reads](#Non-repeatable-reads)
+      - [Phantom reads](#Phantom-reads)
+    - [Isolation xử lý đồng thời (concurrency)](#Isolation-x%E1%BB%AD-l%C3%BD-%C4%91%E1%BB%93ng-th%E1%BB%9Di-concurrency)
+      - [Serializable](#Serializable)
+      - [Read Committed](#Read-Committed)
+      - [Repeatable read](#Repeatable-read)
+      - [Read Uncommitted](#Read-Uncommitted)
+  - [Connector](#Connector)
+    - [JDBC Driver](#JDBC-Driver)
+    - [Python Driver](#Python-Driver)
+
+## Installation
+
+[Mysql](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04)
+
 ## Storage Engine
 
 ### InnoDB
