@@ -331,4 +331,26 @@ PUNSUBSCRIBE news.*
 
 ### Cơ bản về Lock
 
-Trong computer science, `lock` hoặc `mutex` là một cơ chế đồng bộ để thực thi các giới hạn truy cập vào một tài nguyên trong một môi trường có thread thực thi. Một `lock` được thiết kế để thực thi một mutual exclusion concurrency control.
+Khóa là cơ chế giúp cho các truy cập đồng thời cùng một shared resource. Ta dùng lock để tránh lost update, dead lock,... 
+
+### Pessimistic
+
+Là chiến lược lcok trước tài nguyên (rows) trước khi end user modify. Giả sử User 1 và User 2 là hai người dùng khác nhau sử dụng Pesimistic locking, cả hai đều cố gắng thay đổi cùng một row:
+
+- User 1 call EmployeeImpl.setSalary(1000) trên một row cụ thể, do đó user 1 ngay lập tức có được khóa trên row đó.
+- User 2 call EmployeeImpl.setSalary(2000) trên một row tượng tự, lúc này User 2 sẽ nhận được exception là row này đã bị lock.
+
+Chiến lược `Pessimistic` không cần phải check xem version nào, bởi vì không có khả năng một dòng bị thay đổi bởi một transaction cùng một lúc. Tuy nó chỉ hữu dụng trong môi trường stateful hay connected environment, giống như là luôn giữ kết nối database như kiểu client/server. Trong các application bây giờ số lượng end user càng lớn thì việc giữ connection quá là xa xỉ.
+
+### Optimistic
+
+Là chiến lược chỉ lock tại thời điểm user modifying. Cách này không phải luôn giữ connection với database. Chiến lược này nếu không khéo rất dễ bị lost update. Ví dụ bảng emp có trường name và date_of_birth. Cùng 1 lúc có 2 users A và B query duex liệu record 5 trên application của mình. Sau đó A sửa trường name rồi commit. Tiếp theo B sửa trường date_of_birth rồi cũng commit. Một lát sua A query lại record 5 thấy vẫn là name cũ.
+
+Vậy để tránh lost update có 2 cách:
+
+- Tạo thêm ột column (kiểm interger hoặc date/timestamp) để lưu version của record. Việc maintain "version" column có thể thực hiện manually hoặc auto to thông qua trigger
+- Sử dụng checksum hoặc hash function để tính toán ra một giá trị dựa trên dữ liệu gốc.
+
+## Reference
+
+- [Lock](https://en.wikipedia.org/wiki/Lock_(computer_science))
