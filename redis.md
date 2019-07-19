@@ -348,8 +348,22 @@ Là chiến lược chỉ lock tại thời điểm user modifying. Cách này k
 
 Vậy để tránh lost update có 2 cách:
 
-- Tạo thêm ột column (kiểm interger hoặc date/timestamp) để lưu version của record. Việc maintain "version" column có thể thực hiện manually hoặc auto to thông qua trigger
+- Tạo thêm một column (kiểm interger hoặc date/timestamp) để lưu version của record. Việc maintain "version" column có thể thực hiện manually hoặc auto to thông qua trigger
 - Sử dụng checksum hoặc hash function để tính toán ra một giá trị dựa trên dữ liệu gốc.
+
+### Distributed Lock
+
+Distributed Lock trong distributed system sẽ có nhiều tiến trình cùng lúc truy cập vào tài nguyên. Distributed lock sẽ quản lý việc truy cập vào tài nguyên của các process này.
+
+### Redlock
+
+#### Safety and Liveness guarantees
+
+- Safety property: Mutual exclusion. Tại bất kì thời điểm, chỉ một client giữ một lock
+- Liveness property A: Deadlock free. Cuối cùng, luôn có thể có được khóa, ngay cả khi client lock một tài nguyên bị crashed hoặc đang bị partition
+- Liveness property B: Fault tolerance. Miễn là phần lớn các node Redis hoạt động thì client có thể có được khóa hoặc release khóa.
+
+#### Redlock algorithm 
 
 ## Reference
 
