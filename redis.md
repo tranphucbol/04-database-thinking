@@ -344,7 +344,7 @@ Chiến lược `Pessimistic` không cần phải check xem version nào, bởi 
 
 ### Optimistic
 
-Là chiến lược chỉ lock tại thời điểm user modifying. Cách này không phải luôn giữ connection với database. Chiến lược này nếu không khéo rất dễ bị lost update. Ví dụ bảng emp có trường name và date_of_birth. Cùng 1 lúc có 2 users A và B query duex liệu record 5 trên application của mình. Sau đó A sửa trường name rồi commit. Tiếp theo B sửa trường date_of_birth rồi cũng commit. Một lát sua A query lại record 5 thấy vẫn là name cũ.
+Là chiến lược chỉ lock tại thời điểm user modifying. Cách này không phải luôn giữ connection với database. Chiến lược này nếu không khéo rất dễ bị lost update. Ví dụ bảng emp có trường name và date_of_birth. Cùng 1 lúc có 2 users A và B query duex liệu record 5 trên application của mình. Sau đó A sửa trường name rồi commit. Tiếp theo B sửa trường date_of_birth rồi cũng commit. Một lát sửa A query lại record 5 thấy vẫn là name cũ.
 
 Vậy để tránh lost update có 2 cách:
 
@@ -365,6 +365,15 @@ Distributed Lock trong distributed system sẽ có nhiều tiến trình cùng l
 
 #### Redlock algorithm 
 
+Để nhận lock, một clinet thực hiện các thao tác sau:
+
+1. Nhận thời gian hiện tại theo đơn vị mili giây
+2. Cố gắng tạo lock tuần tự trong tất cả N instance, sử dụng cùng một tên `key` và giá trị ngẫu nhiên cho tất cả các instance. Trong suốt bước 2 khi thiế đặt lock trong mỗi instance, client sử dụng một timeout nhỏ hơn so với tổng thời gian tự dộng giải phóng lock để tạo lock. Ví dụ, nếu một thowifgian giải phóng lock tự động là 10 giây, thì timeout có thể nằm trong khoảng 5-50ms. Việc này ngăn chặn client cố gắng kết nối với một Reids node bị treo trong một thời gian dài: nếu một instance không sẵn dùng, ta nên thử kết nối với instance tiếp theo càng sớm càng tốt.
+3. Client sẽ phải tính toán xem bao nhiêu thời gian đã trôi qua để nhận được lock bằng cách sử dụng thời gian hiện tại đã lấy được từ bước 1. Nếu và chỉ nếu client nhận được lock trong phần lớn các instance (ít nhất là 3), và tổng thời gian trôi qua để có được lock ít hơn thời gian hiệu lực của lock, lock đó sẽ được nhận.
+4. Nếu lock đã được nhận, thời gian hiệu lực thực sự của nó chính là thời gian hiệu lực hởi tạo ban đầu trừ đi thời gian trôi qua trong lúc tạo lock, như đã tính trong bước 3.
+5. Nếu client không thể được lock vì một vài lí do (hoặc nó không thể tạo lock trên N/2 + 1 instance, hoặc thời gian hiệu lực là số âm), nó sẽ cố gắng unclock trên tất cả instance (ngay cả những instance mà nó cho rằng vẫn chưa tạo được lock)
+
 ## Reference
 
 - [Lock](https://en.wikipedia.org/wiki/Lock_(computer_science))
+- [Optimistic và Pessimistic locking](https://labs.septeni-technology.jp/technote/optimistic-hay-pessimistic-locking/)
